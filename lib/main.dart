@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:saffinder/models.dart';
 
 void main() {
   runApp(SAF());
@@ -33,7 +33,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   List<Weapon> _weapons;
-  Map<String, List<Weapon>> _augments;
+  Map<String, Augment> _augments;
   List<String> _keys;
   TextEditingController _searchController;
   String _search = '';
@@ -54,7 +54,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         _search = _searchController.text;
       });
     });
-    loadWeapons();
+    loadJSON();
   }
 
   @override
@@ -151,7 +151,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               if (idx.isOdd) return Divider(thickness: 2);
               final index = idx ~/ 2;
               final augment = filtered[index];
-              final weapons = _augments[augment];
+              final weapons = _augments[augment].weapons;
               List<Widget> children = [];
               weapons.forEach((element) {
                 children.add(ListTile(
@@ -172,9 +172,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ));
               });
               return ExpansionTile(
-                key: PageStorageKey(augment),
-                title: Text(augment),
-                subtitle: Text('Effect here'),
+                key: PageStorageKey(_augments[augment].name),
+                title: Text(_augments[augment].name),
+                subtitle: Text(_augments[augment].effect),
                 children: children,
               );
             },
@@ -184,65 +184,45 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-  Future<void> loadWeapons() async {
+  Future<void> loadJSON() async {
+    List augmentsJson = jsonDecode(await DefaultAssetBundle.of(context).loadString('data/augments.json')) as List;
+    List augments = augmentsJson.map<Augment>((augment) => Augment.fromJson(augment)).toList();
+
     List weaponsJson = jsonDecode(await DefaultAssetBundle.of(context).loadString('data/weapons.json')) as List;
-    List weapons = weaponsJson.map<Weapon>((weapon) => Weapon.fromJson(weapon)).toList();
+    List<Weapon> weapons = weaponsJson.map<Weapon>((weapon) => Weapon.fromJson(weapon)).toList();
     weapons.sort((a,b) => a.name.compareTo(b.name));
-    Map<String, List<Weapon>> augments = Map();
-    weapons.forEach((weapon) {
-      augments.update(
-        weapon.saf, 
-        (value) {
-          value.add(weapon);
-          return value;
-        }, 
-        ifAbsent: () {
-          return [weapon];
-        }
-      );
+
+    Map<String, Augment> augmentsMap = Map();
+    augments.forEach((affix) {
+      augmentsMap.putIfAbsent(affix.lower, () => affix);
     });
-    List keys = augments.keys.toList()..sort((a,b) => a.compareTo(b));
+
+    Map<String, Augment> safMap = Map();
+    for (int i = 0; i < weapons.length; i++) {
+      try {
+        weapons[i].safEffect = augmentsMap[weapons[i].lower].effect;
+        safMap.update(
+          weapons[i].lower, 
+          (value) {
+            value.weapons.add(weapons[i]);
+            return value;
+          },
+          ifAbsent: () => augmentsMap[weapons[i].lower]
+        );
+      } catch (e) {
+        print('failed to get saf for ${weapons[i].saf}');
+        continue;
+      }
+    }
+
+    List keys = safMap.keys.toList()..sort((a,b) => a.compareTo(b));
     setState(() {
       _weapons = weapons;
-      _augments = augments;
+      _augments = safMap;
       _keys = keys;
     });
   }
 }
 
 
-class Weapon {
-  final String category;
-  final String rarity;
-  final String name;
-  final String saf;
-  final String dropString;
-  final List<String> drop;
-  
 
-  Weapon({this.category, this.rarity, this.name, this.saf, this.dropString, this.drop});
-  
-  factory Weapon.fromJson(Map raw) => Weapon(
-    category: raw['category'],
-    rarity: raw['rarity'],
-    name: raw['name'],
-    saf: raw['saf'],
-    dropString: raw['drop'],
-    drop: raw['drop'].split('\n')
-  );
-
-  get rarityName => '$rarity\u{2605} $name';
-  get url => 'https://pso2na.arks-visiphone.com/wiki/${name.replaceAll(' ', '_')}';
-
-  Future<void> gotoURL() async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    } 
-  }
-
-  bool contains(String search) {
-    return category.toLowerCase().contains(search) || rarity.toLowerCase().contains(search) || name.toLowerCase().contains(search) || saf.toLowerCase().contains(search) || dropString.toLowerCase().contains(search);
-  }
-}
