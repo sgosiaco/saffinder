@@ -96,18 +96,22 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             itemBuilder: (context, idx) {
               if (idx.isOdd) return Divider();
               final index = idx ~/ 2;
+              if (filtered[index].dropString != '') {
+                List<Widget> drops = [];
+                filtered[index].drop.forEach((element) {
+                  drops.add(Text(element));
+                });
+                return ExpansionTile(
+                  leading: Text(filtered[index].rarity),
+                  title: Text(filtered[index].name),
+                  subtitle: Text(filtered[index].saf),
+                  children: drops,
+                );
+              }
               return ListTile(
                 leading: Text(filtered[index].rarity),
                 title: Text(filtered[index].name),
-                subtitle: Row(
-                  children: [
-                    Text(filtered[index].saf),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                      child: Text(filtered[index].dropString)
-                    ),
-                  ],
-                ),
+                subtitle: Text(filtered[index].saf),
               );
             },
           )
@@ -133,7 +137,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               final index = idx ~/ 2;
               final augment = filtered[index];
               final weapons = _augments[augment];
-              List<Widget> children = [Text(augment)];
+              List<Widget> children = [];
               weapons.forEach((element) {
                 children.add(ListTile(
                   leading: Text(element.rarity),
@@ -145,7 +149,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ),
                 ));
               });
-              return Column(
+              return ExpansionTile(
+                title: Text(augment),
+                subtitle: Text('Effect here'),
                 children: children,
               );
             },
