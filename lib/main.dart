@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -41,6 +42,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: _tabs.length);
+    _tabController.addListener(() {
+      setState(() {
+        _search = '';
+        _searchController.text = '';
+      });
+    });
     _searchController = TextEditingController();
     _searchController.addListener(() {
       setState(() {
@@ -96,22 +103,30 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             itemBuilder: (context, idx) {
               if (idx.isOdd) return Divider();
               final index = idx ~/ 2;
-              if (filtered[index].dropString != '') {
-                List<Widget> drops = [];
-                filtered[index].drop.forEach((element) {
+              List<Widget> drops = [Text('Drop info', style: TextStyle(fontWeight: FontWeight.bold),)];
+              filtered[index].drop.forEach((element) {
+                if (filtered[index].dropString == '') {
+                  drops.add(Text('Not available'));
+                } else {
                   drops.add(Text(element));
-                });
-                return ExpansionTile(
-                  leading: Text(filtered[index].rarity),
-                  title: Text(filtered[index].name),
-                  subtitle: Text(filtered[index].saf),
-                  children: drops,
-                );
-              }
-              return ListTile(
-                leading: Text(filtered[index].rarity),
-                title: Text(filtered[index].name),
+                }
+              });
+              return ExpansionTile(
+                key: PageStorageKey(filtered[index].name),
+                title: Text(filtered[index].rarityName),
                 subtitle: Text(filtered[index].saf),
+                children: [
+                  ListTile(
+                    title: Column(children: drops,),
+                    trailing: IconButton(
+                      tooltip: 'Lookup on Arks-Visiphone',
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        html.window.open(filtered[index].url, filtered[index].name);
+                      },
+                    ),
+                  )
+                ],
               );
             },
           )
@@ -141,15 +156,23 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               weapons.forEach((element) {
                 children.add(ListTile(
                   leading: Text(element.rarity),
-                  title: Text(element.name),
+                  title: Text(element.rarityName),
                   subtitle: Row(
                     children: [
                       Text(element.dropString),
                     ],
                   ),
+                  trailing: IconButton(
+                    tooltip: 'Lookup on Arks-Visiphone',
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      html.window.open(element.url, element.name);
+                    },
+                  ),
                 ));
               });
               return ExpansionTile(
+                key: PageStorageKey(augment),
                 title: Text(augment),
                 subtitle: Text('Effect here'),
                 children: children,
@@ -207,6 +230,9 @@ class Weapon {
     dropString: raw['drop'],
     drop: raw['drop'].split('\n')
   );
+
+  get rarityName => '$rarity\u{2605} $name';
+  get url => 'https://pso2na.arks-visiphone.com/wiki/${name.replaceAll(' ', '_')}';
 
   bool contains(String search) {
     return category.toLowerCase().contains(search) || rarity.toLowerCase().contains(search) || name.toLowerCase().contains(search) || saf.toLowerCase().contains(search) || dropString.toLowerCase().contains(search);
