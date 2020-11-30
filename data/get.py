@@ -1,5 +1,6 @@
 import json
 import requests
+import requests_cache
 import time
 
 class Weapon:
@@ -31,11 +32,12 @@ weapons = [
 ]
 
 items = []
+requests_cache.install_cache('cache')
 
 for weapon in weapons:
     print(f'Processing {weapon}')
     page = requests.get(f'https://pso2na.arks-visiphone.com/index.php?title={weapon}&action=edit')
-    info = page.content.decode().split('{{Weapon_Listing}}')[1].replace(u'\u2605', '*').replace('&lt;/table>', '')
+    info = page.content.decode().split('{{Weapon_Listing}}')[1].replace(u'\u2605', '*').replace('&lt;/table>', '').replace('&amp;', '&')
     lines = info.split('\n')
     #f = open(f'{weapon}.txt', 'w')
     #output = ''
@@ -49,14 +51,16 @@ for weapon in weapons:
         attributes = line.split('|')
         if len(attributes) < 5:
             continue
-        rarity = line.split('rarity')[1].split('|')[0].split('=')[1]
-        name = line.split('name')[1].split('|')[0].split('=')[1]
+        rarity = line.split('rarity')[1].split('|')[0].split('=')[1].strip()
+        name = line.split('name')[1].split('|')[0].split('=')[1].strip()
         factors = line.split('AugmentFactors')
         if len(factors) < 2:
             print(f'{name} HAS NO FACTORS!')
             continue
-        saf = factors[1].split('|')[1].replace('}}', '')
-        drop = attributes[-1].replace('}}', '').replace('[[', '').replace(']]', '').replace('&lt;br>', '\n')
+        saf = factors[1].split('|')[1].replace('}}', '').split('&lt;')[0].strip()
+        drop = attributes[-1].replace('}}', '').replace('[[', '').replace(']]', '').replace('&lt;br>', '\n').strip()
+        if '&lt;/small' in drop:
+            drop = line.split('&lt;small>')[1].replace('[[', '').replace(']]', '').replace('&lt;br>', '\n').replace('Challenge_Mile_Shop|', '').split('&lt;/small>')[0].strip()
         
         #print(f'{rarity} | {name} | {saf} | {drop}')
         #output += f'{rarity} | {name} | {saf} | {drop}\n'
