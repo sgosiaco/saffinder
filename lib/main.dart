@@ -24,18 +24,27 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  final List<Tab> _tabs = [
+    Tab(text: 'Augments'),
+    Tab(text: 'Weapons'),
+  ];
+  TabController _tabController;
+
   List<Weapon> _weapons;
-  TextEditingController searchController;
+  Map<String, List<Weapon>> _augments;
+  List<String> _keys;
+  TextEditingController _searchController;
   String _search = '';
 
   @override
   void initState() {
     super.initState();
-    searchController = TextEditingController();
-    searchController.addListener(() {
+    _tabController = TabController(vsync: this, length: _tabs.length);
+    _searchController = TextEditingController();
+    _searchController.addListener(() {
       setState(() {
-        _search = searchController.text;
+        _search = _searchController.text;
       });
     });
     loadWeapons();
@@ -43,6 +52,8 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
+    _searchController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -52,23 +63,35 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         appBar: AppBar(
           title: TextField(
-            controller: searchController,
+            controller: _searchController,
+          ),
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: _tabs
           )
         ),
-        body: _buildList(),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildAugments(),
+            _buildWeapons(),
+          ],
+        ),
       )
     );
   }
 
-  Widget _buildList() {
+  Widget _buildWeapons() {
     return Builder(
       builder: (context) {
         if ((_weapons ?? []).length == 0) {
           return Center(child: CircularProgressIndicator());
         }
-        final filtered = _weapons.where((element) => element.contains(_search)).toList();
+        final filtered = _weapons.where((element) => element.contains(_search.toLowerCase())).toList();
         return Scrollbar(
           child: ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(10),
             itemCount: filtered.length * 2,
             itemBuilder: (context, idx) {
               if (idx.isOdd) return Divider();
@@ -79,9 +102,51 @@ class _HomeState extends State<Home> {
                 subtitle: Row(
                   children: [
                     Text(filtered[index].saf),
-                    Text(filtered[index].dropString),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Text(filtered[index].dropString)
+                    ),
                   ],
                 ),
+              );
+            },
+          )
+        );
+      }
+    );
+  }
+
+  Widget _buildAugments() {
+    return Builder(
+      builder: (context) {
+        if ((_weapons ?? []).length == 0) {
+          return Center(child: CircularProgressIndicator());
+        }
+        final filtered = _keys.where((element) => element.toLowerCase().contains(_search.toLowerCase())).toList();
+        return Scrollbar(
+          child: ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(10),
+            itemCount: filtered.length * 2,
+            itemBuilder: (context, idx) {
+              if (idx.isOdd) return Divider(thickness: 2);
+              final index = idx ~/ 2;
+              final augment = filtered[index];
+              final weapons = _augments[augment];
+              List<Widget> children = [Text(augment)];
+              weapons.forEach((element) {
+                children.add(ListTile(
+                  leading: Text(element.rarity),
+                  title: Text(element.name),
+                  subtitle: Row(
+                    children: [
+                      Text(element.dropString),
+                    ],
+                  ),
+                ));
+              });
+              return Column(
+                children: children,
               );
             },
           )
@@ -94,8 +159,24 @@ class _HomeState extends State<Home> {
     List weaponsJson = jsonDecode(await DefaultAssetBundle.of(context).loadString('data/weapons.json')) as List;
     List weapons = weaponsJson.map<Weapon>((weapon) => Weapon.fromJson(weapon)).toList();
     weapons.sort((a,b) => a.name.compareTo(b.name));
+    Map<String, List<Weapon>> augments = Map();
+    weapons.forEach((weapon) {
+      augments.update(
+        weapon.saf, 
+        (value) {
+          value.add(weapon);
+          return value;
+        }, 
+        ifAbsent: () {
+          return [weapon];
+        }
+      );
+    });
+    List keys = augments.keys.toList()..sort((a,b) => a.compareTo(b));
     setState(() {
       _weapons = weapons;
+      _augments = augments;
+      _keys = keys;
     });
   }
 }
