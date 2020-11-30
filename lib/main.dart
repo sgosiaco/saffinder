@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:html' as html;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(SAF());
@@ -122,7 +122,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       tooltip: 'Lookup on Arks-Visiphone',
                       icon: Icon(Icons.search),
                       onPressed: () {
-                        html.window.open(filtered[index].url, filtered[index].name);
+                        filtered[index].gotoURL();
                       },
                     ),
                   )
@@ -166,7 +166,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     tooltip: 'Lookup on Arks-Visiphone',
                     icon: Icon(Icons.search),
                     onPressed: () {
-                      html.window.open(element.url, element.name);
+                      element.gotoURL();
                     },
                   ),
                 ));
@@ -233,6 +233,14 @@ class Weapon {
 
   get rarityName => '$rarity\u{2605} $name';
   get url => 'https://pso2na.arks-visiphone.com/wiki/${name.replaceAll(' ', '_')}';
+
+  Future<void> gotoURL() async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    } 
+  }
 
   bool contains(String search) {
     return category.toLowerCase().contains(search) || rarity.toLowerCase().contains(search) || name.toLowerCase().contains(search) || saf.toLowerCase().contains(search) || dropString.toLowerCase().contains(search);
