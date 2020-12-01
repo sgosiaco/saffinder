@@ -74,7 +74,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       child: Scaffold(
         appBar: AppBar(
           title: TextField(
-            autofocus: true,
+            autofocus: false,
             focusNode: _focusNode,
             controller: _searchController,
             style: TextStyle(color: Colors.white),
