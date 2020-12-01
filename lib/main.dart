@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:saffinder/models.dart';
 
 void main() {
+  //LicenseRegistry.addLicense(() => null)
   runApp(SAF());
 }
 
@@ -31,12 +34,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     Tab(text: 'Weapons'),
   ];
   TabController _tabController;
-
   List<Weapon> _weapons;
   Map<String, Augment> _augments;
   List<String> _keys;
   TextEditingController _searchController;
   String _search = '';
+  FocusNode _focusNode;
 
   @override
   void initState() {
@@ -54,6 +57,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         _search = _searchController.text;
       });
     });
+    _focusNode = FocusNode();
     loadJSON();
   }
 
@@ -70,12 +74,54 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       child: Scaffold(
         appBar: AppBar(
           title: TextField(
+            autofocus: true,
+            focusNode: _focusNode,
             controller: _searchController,
+            style: TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
+            decoration: InputDecoration(
+              hintText: 'Search...',
+              hintStyle: TextStyle(color: Colors.white),
+            ),
+            onSubmitted: (string) {
+              _searchController.text = '';
+              _focusNode.requestFocus();
+            },
           ),
           bottom: TabBar(
             controller: _tabController,
             tabs: _tabs
-          )
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.info),
+              onPressed: () {
+                showAboutDialog(
+                  context: context,
+                  applicationIcon: Image(image: AssetImage('assets/favicon.png')),
+                  applicationName: 'SAF Finder',
+                  applicationVersion: '1.0',
+                  applicationLegalese: 'Developed by Sean Gosiaco\n',
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text('A Special Augment Factor (SAF) Finder for Phantasy Star Online 2 (PSO2).')
+                    ),
+                    InkWell(
+                      child: Text('https://github.com/sgosiaco/saffinder', style: TextStyle(color: Colors.blue)),
+                      onTap: () async {
+                        if (await canLaunch('https://github.com/sgosiaco/saffinder')) {
+                          await launch('https://github.com/sgosiaco/saffinder');
+                        } else {
+                          throw 'Could not launch https://github.com/sgosiaco/saffinder';
+                        } 
+                      },
+                    )
+                  ]
+                );
+              },
+            )
+          ],
         ),
         body: TabBarView(
           controller: _tabController,

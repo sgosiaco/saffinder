@@ -1,6 +1,6 @@
 # SAF Finder
 A SAF Finder for PSO2.
-## [Use the finder here](saffinder.ml)
+## [Use the finder here](https://saffinder.ml)
 ---
 ## Features
 - Allows for easy search of which weapons give which special augment factor aka SAF
