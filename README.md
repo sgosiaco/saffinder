@@ -28,7 +28,7 @@ A SAF Finder for PSO2.
 - Uses weapon and SAF data from NA Arks-Visiphone wiki
 - Uses translated augment data from Global PSO2 Affixing Assistant
 - Website developed in Flutter/Dart. Scraping utilities done in python.
-- Hosted on vercel.com
+- Hosted on [Vercel](https://vercel.com)
 
 ## Credit
 - [NA Arks-Visiphone](http://pso2na.arks-visiphone.com/) for weapon and SAF data.
