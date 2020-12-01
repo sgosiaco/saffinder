@@ -64,8 +64,8 @@ for weapon in weapons:
     info = info.replace('&lt;', '<').replace('&amp;', '&')
     newpage = patch(info)
     print('Writing patch')
-    with open(os.path.join(cwd, 'old', f'{weapon}.txt'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(cwd, 'new', f'{weapon}.txt'), 'w', encoding='utf-8') as f:
         f.write(newpage)
     
-    with open(os.path.join(cwd, 'new', f'{weapon}.txt'), 'w', encoding='utf-8') as old:
+    with open(os.path.join(cwd, 'old', f'{weapon}.txt'), 'w', encoding='utf-8') as old:
         old.write(info)
