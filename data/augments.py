@@ -17,6 +17,7 @@ def patch(input):
         .replace('Sentence Deftness', 'Sentence Arma')
         .replace('Greuzoras', 'Gryzorus ')
         .replace('Duvals', 'Deubarz')
+        #.replace('Lustrous', 'Luminous')
     )
     return out
 

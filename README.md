@@ -24,7 +24,7 @@ A SAF Finder for PSO2.
 - Can click on a weapon to see whereh the weapon comes from (if available)
     - Can click on the search button to be redirected to the NA Arks-Visiphone wiki page for the weapon
 
-## Info
+## Technical Info
 - Uses weapon and SAF data from NA Arks-Visiphone wiki
 - Uses translated augment data from Global PSO2 Affixing Assistant
 - Website developed in Flutter/Dart. Scraping utilities done in python.

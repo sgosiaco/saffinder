@@ -223,7 +223,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             value.weapons.add(weapons[i]);
             return value;
           },
-          ifAbsent: () => augmentsMap[weapons[i].lower]
+          ifAbsent: () {
+            augmentsMap[weapons[i].lower].weapons.add(weapons[i]);
+            return augmentsMap[weapons[i].lower];
+          }
         );
       } catch (e) {
         //print('failed to get saf for ${weapons[i].name} ${weapons[i].saf}');
@@ -234,7 +237,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             value.weapons.add(weapons[i]);
             return value;
           },
-          ifAbsent: () => Augment(name: weapons[i].saf, effect: 'N/A')
+          ifAbsent: () {
+            final na = Augment(name: weapons[i].saf, effect: 'N/A');
+            na.weapons.add(weapons[i]);
+            return na;
+          }
         );
         continue;
       }

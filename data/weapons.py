@@ -19,6 +19,9 @@ def patch(name, saf):
         .replace('Lucentrush', 'Apparition')
         .replace('Shield of the Spectre', 'Spectre Shield') #
         .replace('Lifesteal', 'Lifesteal Strike')
+        .replace('Lucent Strike', 'Lustrous Strike')
+        .replace('Lucent Grace', 'Luminous Grace')
+        #.replace('Lustrous Domain', 'Lucent Domain')
     )
     if 'Aura' in name or 'Ceres' in name:
         out = out.replace('Doom Break', 'Doom Break I')
