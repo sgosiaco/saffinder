@@ -85,7 +85,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
             onSubmitted: (string) {
               _searchController.text = '';
-              _focusNode.requestFocus();
+              //_focusNode.requestFocus();
+              _focusNode.unfocus();
             },
           ),
           bottom: TabBar(
