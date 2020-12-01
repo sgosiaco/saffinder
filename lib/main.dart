@@ -115,6 +115,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               });
               return ExpansionTile(
                 key: PageStorageKey(filtered[index].name),
+                leading: filtered[index].image,
                 title: Text(filtered[index].rarityName),
                 subtitle: Text('${filtered[index].saf}'),
                 children: [
@@ -170,7 +171,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               List<Widget> children = [];
               weapons.forEach((element) {
                 children.add(ListTile(
-                  //leading: Text(element.rarity),
+                  leading: element.image,
                   title: Text(element.rarityName),
                   subtitle: Row(
                     children: [

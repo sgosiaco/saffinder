@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Augment {
@@ -29,7 +30,6 @@ class Weapon {
   final List<String> drop;
   String safEffect = '';
   
-
   Weapon({this.category, this.rarity, this.name, this.saf, this.dropString, this.drop});
   
   factory Weapon.fromJson(Map raw) => Weapon(
@@ -44,6 +44,7 @@ class Weapon {
   get rarityName => '$rarity\u{2605} $name';
   get url => 'https://pso2na.arks-visiphone.com/wiki/${name.replaceAll(' ', '_')}';
   get lower => saf.toLowerCase().splitMapJoin(RegExp('([a-z, 0-9])'), onNonMatch: (t) => '').replaceAll(RegExp('\\s'), '');
+  get image => AspectRatio(aspectRatio: 1, child: Image(image: AssetImage('assets/${category.replaceAll(' ', '_')}.png')));
 
   Future<void> gotoURL() async {
     if (await canLaunch(url)) {

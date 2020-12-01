@@ -33,3 +33,7 @@ A SAF Finder for PSO2.
 ## Credit
 - [NA Arks-Visiphone](http://pso2na.arks-visiphone.com/) for weapon and SAF data.
 - [Global PSO2 Affixing Assistant](https://github.com/CorVous/PSO2AffixingAssistant) for translated augment data.
+
+## Copyright
+- All rights to the copyrighted works (images, data, audios, texts, etc.) used in PSO2 are owned by SEGA Corporation.
+- All other trademarks, logos and copyrights are property of their respective owners
