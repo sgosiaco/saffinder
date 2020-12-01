@@ -57,7 +57,10 @@ for weapon in weapons:
         if len(factors) < 2:
             print(f'{name} HAS NO FACTORS!')
             continue
-        saf = factors[1].split('|')[1].replace('}}', '').split('&lt;')[0].strip()
+        saf = factors[1].split('|')[1].replace('}}', '').split('&lt;')[0].replace('Resolve', 'Will').replace('Revenant', 'Spectre').replace('Lucentrush', 'Apparition').strip()
+        saf = saf.replace('Spectre Lucentboon', 'Lustrous Spectre').replace('Shield of the Spectre', 'Spectre Shield')
+        if 'S2' in saf and 'Spectre' in saf:
+            saf = saf.replace('\'s', '')
         drop = attributes[-1].replace('}}', '').replace('[[', '').replace(']]', '').replace('&lt;br>', '\n').strip()
         if '&lt;/small' in drop:
             drop = line.split('&lt;small>')[1].replace('[[', '').replace(']]', '').replace('&lt;br>', '\n').replace('Challenge_Mile_Shop|', '').split('&lt;/small>')[0].strip()
@@ -69,7 +72,7 @@ for weapon in weapons:
     #f.write(output)
     #print(f'Wrote {len(output)} characters to {weapon}.txt')
     #f.close()
-    time.sleep(2) # Be nice and wait 2 sec before next request
+    #time.sleep(2) # Be nice and wait 2 sec before next request
 
 print('Writing json')
 f = open('weapons.json', 'w')

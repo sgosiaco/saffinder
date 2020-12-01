@@ -12,7 +12,7 @@ requests_cache.install_cache('affix_cache')
 
 page = requests.get('https://raw.githubusercontent.com/CorVous/PSO2AffixingAssistant/master/js/lang.js')
 
-code = page.content.decode().replace('<br>', '').replace('*', '')
+code = page.content.decode().replace('<br>', '').replace('*', '').replace('Soverign', 'Sovereign')
 start = code.find('"AA01')
 end = code.find('});') + 1
 obj = '{\r\n\t'

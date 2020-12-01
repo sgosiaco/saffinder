@@ -46,3 +46,4 @@ app.*.map.json
 /android/app/release
 data/weapons.txt
 data/affix_cache.sqlite
+data/cache.sqlite

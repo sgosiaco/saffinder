@@ -210,7 +210,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ifAbsent: () => augmentsMap[weapons[i].lower]
         );
       } catch (e) {
-        print('failed to get saf for ${weapons[i].saf}');
+        print('failed to get saf for ${weapons[i].name} ${weapons[i].saf}');
+        safMap.update(
+          weapons[i].lower, 
+          (value) {
+            value.weapons.add(weapons[i]);
+            return value;
+          },
+          ifAbsent: () => Augment(name: weapons[i].saf, effect: 'N/A')
+        );
         continue;
       }
     }
