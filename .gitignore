@@ -50,3 +50,4 @@ data/cache.sqlite
 patch/cache.sqlite
 patch/new/
 patch/old/
+patch/diff/
