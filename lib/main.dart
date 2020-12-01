@@ -297,6 +297,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     bad.forEach((element) {
       print('Failed to get saf $element');
+      print('${weapons.where((weapon) => weapon.saf == element).toList()[0].name}');
     });
 
     List keys = safMap.keys.toList()..sort((a,b) => a.compareTo(b));
