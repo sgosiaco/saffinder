@@ -13,6 +13,11 @@ class Augment {
   );
 
   get lower => name.toLowerCase().splitMapJoin(RegExp('([a-z, 0-9])'), onNonMatch: (t) => '').replaceAll(RegExp('\\s'), '');
+
+  bool contains(String search) {
+    final weapon = weapons.firstWhere((element) => element.contains(search), orElse: () => null);
+    return name.toLowerCase().contains(search) || effect.toLowerCase().contains(search) || weapon != null;
+  }
 }
 
 class Weapon {

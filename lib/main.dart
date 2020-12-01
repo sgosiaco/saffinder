@@ -103,7 +103,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             itemBuilder: (context, idx) {
               if (idx.isOdd) return Divider();
               final index = idx ~/ 2;
-              List<Widget> drops = [Text('Drop info', style: TextStyle(fontWeight: FontWeight.bold),)];
+              List<Widget> drops = [
+                Text('Drop info', style: TextStyle(fontWeight: FontWeight.bold),)
+              ];
               filtered[index].drop.forEach((element) {
                 if (filtered[index].dropString == '') {
                   drops.add(Text('Not available'));
@@ -114,10 +116,23 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               return ExpansionTile(
                 key: PageStorageKey(filtered[index].name),
                 title: Text(filtered[index].rarityName),
-                subtitle: Text(filtered[index].saf),
+                subtitle: Text('${filtered[index].saf}'),
                 children: [
                   ListTile(
-                    title: Column(children: drops,),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Flexible(
+                          child: Column(
+                            children: [
+                              Text('Augment Info', style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text('${filtered[index].safEffect}')
+                            ]
+                          ),
+                        ),
+                        Flexible(child: Column(children: drops),)
+                      ],
+                    ),
                     trailing: IconButton(
                       tooltip: 'Lookup on Arks-Visiphone',
                       icon: Icon(Icons.search),
@@ -141,7 +156,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         if ((_weapons ?? []).length == 0) {
           return Center(child: CircularProgressIndicator());
         }
-        final filtered = _keys.where((element) => element.toLowerCase().contains(_search.toLowerCase())).toList();
+        final filtered = _keys.where((element) => _augments[element].contains(_search.toLowerCase())).toList();
         return Scrollbar(
           child: ListView.builder(
             shrinkWrap: true,
@@ -155,7 +170,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               List<Widget> children = [];
               weapons.forEach((element) {
                 children.add(ListTile(
-                  leading: Text(element.rarity),
+                  //leading: Text(element.rarity),
                   title: Text(element.rarityName),
                   subtitle: Row(
                     children: [

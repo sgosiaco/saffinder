@@ -1,6 +1,6 @@
 {
-    "name": "saffinder",
-    "short_name": "saffinder",
+    "name": "SAF Finder",
+    "short_name": "SAF Finder",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
