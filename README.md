@@ -31,6 +31,7 @@ A SAF Finder for PSO2.
 - Hosted on [Vercel](https://vercel.com)
 
 ## Credit
+- Built by Sean Gosiaco
 - [NA Arks-Visiphone](http://pso2na.arks-visiphone.com/) for weapon and SAF data.
 - [Global PSO2 Affixing Assistant](https://github.com/CorVous/PSO2AffixingAssistant) for translated augment data.
 
