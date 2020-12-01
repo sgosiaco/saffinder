@@ -11,6 +11,19 @@ class Weapon:
         self.saf = saf
         self.drop = drop
 
+def patch(name, saf):
+    out = (saf
+        .replace('Resolve', 'Will')
+        .replace('Revenant', 'Spectre')
+        .replace('Spectre\'s Lucentboon', 'Lustrous Spectre')
+        .replace('Lucentrush', 'Apparition')
+        .replace('Shield of the Spectre', 'Spectre Shield') #
+        .replace('Lifesteal', 'Lifesteal Strike')
+    )
+    if 'Aura' in name or 'Ceres' in name:
+        out = out.replace('Doom Break', 'Doom Break I')
+    return out
+
 weapons = [
     'Swords_List',
     'Wired_Lances_List',
@@ -57,8 +70,8 @@ for weapon in weapons:
         if len(factors) < 2:
             print(f'{name} HAS NO FACTORS!')
             continue
-        saf = factors[1].split('|')[1].replace('}}', '').split('&lt;')[0].replace('Resolve', 'Will').replace('Revenant', 'Spectre').replace('Lucentrush', 'Apparition').strip()
-        saf = saf.replace('Spectre Lucentboon', 'Lustrous Spectre').replace('Shield of the Spectre', 'Spectre Shield')
+        saf = factors[1].split('|')[1].replace('}}', '').split('&lt;')[0].strip()
+        saf = patch(name, saf)
         if 'S2' in saf and 'Spectre' in saf:
             saf = saf.replace('\'s', '')
         drop = attributes[-1].replace('}}', '').replace('[[', '').replace(']]', '').replace('&lt;br>', '\n').strip()

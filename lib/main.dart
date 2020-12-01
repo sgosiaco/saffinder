@@ -198,6 +198,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
 
     Map<String, Augment> safMap = Map();
+    Set<String> bad = Set();
     for (int i = 0; i < weapons.length; i++) {
       try {
         weapons[i].safEffect = augmentsMap[weapons[i].lower].effect;
@@ -210,7 +211,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ifAbsent: () => augmentsMap[weapons[i].lower]
         );
       } catch (e) {
-        print('failed to get saf for ${weapons[i].name} ${weapons[i].saf}');
+        //print('failed to get saf for ${weapons[i].name} ${weapons[i].saf}');
+        bad.add(weapons[i].saf);
         safMap.update(
           weapons[i].lower, 
           (value) {
@@ -222,6 +224,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         continue;
       }
     }
+
+    bad.forEach((element) {
+      print('Failed to get saf $element');
+    });
 
     List keys = safMap.keys.toList()..sort((a,b) => a.compareTo(b));
     setState(() {

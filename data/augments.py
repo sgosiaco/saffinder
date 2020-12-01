@@ -8,15 +8,28 @@ class Augment:
         self.name = name
         self.effect = effect
 
+def patch(input):
+    out = (input
+        .replace('<br>', '').replace('*', '')
+        .replace('Soverign', 'Sovereign')
+        .replace('Tiro', 'Tyro')
+        .replace('Magia Di', 'Magi Di')
+        .replace('Sentence Deftness', 'Sentence Arma')
+        .replace('Greuzoras', 'Gryzorus ')
+        .replace('Duvals', 'Deubarz')
+    )
+    return out
+
 requests_cache.install_cache('affix_cache')
 
 page = requests.get('https://raw.githubusercontent.com/CorVous/PSO2AffixingAssistant/master/js/lang.js')
 
-code = page.content.decode().replace('<br>', '').replace('*', '').replace('Soverign', 'Sovereign')
+code = page.content.decode()
 start = code.find('"AA01')
 end = code.find('});') + 1
 obj = '{\r\n\t'
 obj += code[start: end]
+obj = patch(obj)
 
 objDict = demjson.decode(obj)
 affixes = []
