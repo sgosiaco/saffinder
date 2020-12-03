@@ -100,6 +100,5 @@ for weapon in weapons:
     #time.sleep(2) # Be nice and wait 2 sec before next request
 
 print('Writing json')
-f = open('weapons.json', 'w')
-f.write(json.dumps([ob.__dict__ for ob in items]))
-f.close()
+with open('weapons.json', 'w') as f:
+    f.write(json.dumps([ob.__dict__ for ob in items]))

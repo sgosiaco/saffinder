@@ -40,6 +40,5 @@ for obj in objDict.items():
 #jsonOut = json.dumps(objDict, ensure_ascii=False)
 jsonOut = json.dumps([ob.__dict__ for ob in affixes])
 
-f = open('augments.json', 'w', encoding='utf-8')
-f.write(jsonOut)
-f.close()
+with open('augments.json', 'w', encoding='utf-8') as f:
+    f.write(jsonOut)
