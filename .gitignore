@@ -29,7 +29,7 @@
 .packages
 .pub-cache/
 .pub/
-#/build/
+/build/
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -51,6 +51,3 @@ patch/cache.sqlite
 patch/new/
 patch/old/
 patch/diff/
-build/url_launcher/
-build/flutter_assets/
-build/app/
